@@ -13,6 +13,8 @@ class GopherProtocolHandler:
 			'bin': '9'
 			}
 
+			self.isFile = False
+
 			self.sufix = "\r\n"
 
 			self.test_server_results=[
@@ -64,7 +66,7 @@ class GopherProtocolHandler:
 			'name': 'Test Dir Three',
 			'selector': '/DirThree',
 			'host': 'localhost',
-			'text': '8070',
+			'port': '8070',
 			'type': 'dir',
 			'files': ['Test File Three', 'Test File Four']
 			}
@@ -72,7 +74,8 @@ class GopherProtocolHandler:
 			self.query_results = []
 
 		def get_file(self, res_name):
-			filename = "%s.txt" %res_name.replace(' ', '').lower() 
+			self.isFile = True
+			filename = "testfiles/%s.txt" %res_name.replace(' ', '').lower() 
 			o = open(filename, 'r')
 			lines = o.readlines()
 			lines.append('\n.')
@@ -80,6 +83,7 @@ class GopherProtocolHandler:
 			return lines
 
 		def resolve_gquery(self, query):
+			self.query = query
 			if query != ' ':
 				if query.startswith('/'):
 					files = []
@@ -100,15 +104,20 @@ class GopherProtocolHandler:
 
 		def get_result_strings(self):
 			results = []
-			if len(self.query_results) > 0 and type(self.query_results) is str:
+			if self.isFile:
+				results = self.query_results
+			elif len(self.query_results) > 0:
 				for res in self.query_results:
 					restext = "{0}{1} \t {2}{3}".format(res['name'], res['selector'], res['host'], res['port'])
-					results.append("{0}{1}{2} \r\n".format(self.prefixes[res['type']], restext, self.sufix))
+					results.append("{0}{1}{2}".format(self.prefixes[res['type']], restext, self.sufix))
 				results.append(".")
-			elif type(self.query_results) is list:
-				results = self.query_results
 			else:
 				results.append("\t\t\tFILE NOT FOUND\t\t\t \r\n")
 				results.append(".")
+			r = ''
+			for res in results:
+				if type(res) is str:
+					r+= res
+			return r
 
-			return ''.join(results)
+			
