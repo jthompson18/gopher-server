@@ -11,16 +11,16 @@ sock.connect(server_address)
 try:
     
   # Send data
-  message = 'This is the message.  It will be repeated.'
+  message = ' '
   sock.sendall(bytes(message.encode('utf-8')))
 
-  # Look for the response
-  amount_received = 0
-  amount_expected = len(message)
-  
-  while amount_received < amount_expected:
+  total_response = ''
+
+  while not total_response.endswith('.'):
     data = sock.recv(1024)
-    amount_received += len(data)
+    total_response += data
+
+  print total_response
 
 finally:
   print("closing socket")
