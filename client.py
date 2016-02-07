@@ -11,7 +11,7 @@ sock.connect(server_address)
 try:
     
   # Send data
-  message = ' '
+  message = 'getFileTwo'
   sock.sendall(bytes(message.encode('utf-8')))
 
   total_response = ''
