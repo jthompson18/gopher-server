@@ -1,3 +1,5 @@
+import os
+
 class GopherProtocolHandler:
 		def __init__(self):
 			self.prefixes = {
@@ -75,8 +77,11 @@ class GopherProtocolHandler:
 
 		def get_file(self, res_name):
 			self.isFile = True
-			filename = "testfiles/%s.txt" %res_name.replace(' ', '').lower() 
-			o = open(filename, 'r')
+			filename = "/testfiles/%s.txt" %res_name.replace(' ', '').lower()
+			cwd = os.getcwd()
+			
+			print(cwd+filename)
+			o = open(cwd+filename, 'r')
 			lines = o.readlines()
 			lines.append('\n.')
 			o.close()
